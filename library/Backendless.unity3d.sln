@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backendless.unity3d", "Backendless\Backendless.unity3d.csproj", "{06AFDFFB-59AD-4842-97B5-3967C4CEF7E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F39F1363-001E-415F-A7CA-F4DAE35C4597}"
+	ProjectSection(SolutionItems) = preProject
+		Backendless.unity3d.vsmdi = Backendless.unity3d.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backendless.UnitTest", "Backendless.UnitTest\Backendless.UnitTest.csproj", "{0195BA82-E67C-470B-9E58-45AD9618FDDA}"
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Backendless.unity3d.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06AFDFFB-59AD-4842-97B5-3967C4CEF7E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06AFDFFB-59AD-4842-97B5-3967C4CEF7E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06AFDFFB-59AD-4842-97B5-3967C4CEF7E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06AFDFFB-59AD-4842-97B5-3967C4CEF7E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0195BA82-E67C-470B-9E58-45AD9618FDDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0195BA82-E67C-470B-9E58-45AD9618FDDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0195BA82-E67C-470B-9E58-45AD9618FDDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0195BA82-E67C-470B-9E58-45AD9618FDDA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
