@@ -19,11 +19,11 @@ Backendlessへの[ご登録](https://develop.backendless.com/#registration)が�
 
 ## GMO mBaaS powered by backendless
 
-エンドポイントURLを切り替えることで、Backendlessを国内向けにカスタマイズした[GMO mBaaS](http://cloud.gmo.jp/spec/mbaas/)でもご利用いただくことが可能です。
+エンドポイントURLを切り替えることで、Backendlessを国内向けにカスタマイズした[GMO mBaaS](http://www.gmo-mbaas.com/)でもご利用いただくことが可能です。
 
 詳細はドキュメントをご参照ください。
 
-GMO mbaasへの[ご登録](http://cloud.gmo.jp/spec/mbaas/)が必要です。
+GMO mbaasへの[ご登録](https://www.gmo-mbaas.com/order/)が必要です。
 
 ## ライセンスについて
 
