@@ -53,10 +53,18 @@ public class BackendlessPlugin : MonoBehaviour
   {
     DontDestroyOnLoad(this);
 
+#if UNITY_WEBPLAYER
+#error WEBPLAYER PROXY IMPLEMENT
+    Backendless.setUrl("");
+    string proxyIp = "";
+    int proxyPort = 0;
+    Security.PrefetchSocketPolicy(proxyIp, proxyPort);
+#else
     if (Server == SERVER.GMO_MBAAS)
       Backendless.setUrl("https://api.gmo-mbaas.com");
     else
       Backendless.setUrl("https://api.backendless.com");
+#endif
 
     Backendless.InitApp(applicationId, RestSecretKey, version);
 #if ENABLE_PUSH_PLUGIN

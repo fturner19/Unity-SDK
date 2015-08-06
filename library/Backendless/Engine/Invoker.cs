@@ -19,10 +19,17 @@ using System;
 using BackendlessAPI.Async;
 using BackendlessAPI.Exception;
 using System.Collections.Generic;
-using System.Net;
 using BackendlessAPI.LitJson;
 using System.IO;
-
+#if UNITY_WEBPLAYER
+using System.Net.Sockets;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Threading;
+#else
+using System.Net;
+#endif
 
 namespace BackendlessAPI.Engine
 {
@@ -75,6 +82,7 @@ namespace BackendlessAPI.Engine
       CACHESERVICE_EXPIREIN,
       CACHESERVICE_EXPIREAT,
       CACHESERVICE_DELETE,
+      LOGGERSERVICE_PUT,
       UNKNOWN
     }
     public enum Method
@@ -87,6 +95,107 @@ namespace BackendlessAPI.Engine
       UNKNOWN
     }
 
+#if UNITY_WEBPLAYER
+    static byte[] EOL = { (byte)'\r', (byte)'\n' };
+
+    private class SocketResponse
+    {
+      public int status;
+      public string response;
+      public Dictionary<string, List<string>> headers = new Dictionary<string, List<string>>();
+
+      private void AddHeader(string name, string value)
+      {
+        name = name.ToLower().Trim();
+        value = value.Trim();
+        if (!headers.ContainsKey(name))
+          headers[name] = new List<string>();
+        headers[name].Add(value);
+      }
+
+      public List<string> GetHeaders(string name)
+      {
+        name = name.ToLower().Trim();
+        if (!headers.ContainsKey(name))
+          headers[name] = new List<string>();
+        return headers[name];
+      }
+
+      public string GetHeader(string name)
+      {
+        name = name.ToLower().Trim();
+        if (!headers.ContainsKey(name))
+          return string.Empty;
+        return headers[name][headers[name].Count - 1];
+      }
+
+      private static string ReadLine(Stream stream)
+      {
+        List<byte> line = new List<byte>();
+        while (true)
+        {
+          byte c = (byte)stream.ReadByte();
+          if (c == EOL[1])
+            break;
+          line.Add(c);
+        }
+        return Encoding.UTF8.GetString(line.ToArray()).Trim();
+      }
+
+      private static string[] ReadKeyValue(Stream stream)
+      {
+        string line = ReadLine(stream);
+        if (line == "")
+          return null;
+        else
+        {
+          int split = line.IndexOf(':');
+          if (split == -1)
+            return null;
+          string[] parts = new string[2];
+          parts[0] = line.Substring(0, split).Trim();
+          parts[1] = line.Substring(split + 1).Trim();
+          return parts;
+        }
+      }
+
+      public void ReadFromStream(Stream inputStream)
+      {
+        string[] top = ReadLine(inputStream).Split(new char[] { ' ' });
+        MemoryStream output = new MemoryStream();
+
+        if (!int.TryParse(top[1], out status))
+          throw new System.Exception("Bad Status Code");
+
+        string message = string.Join(" ", top, 2, top.Length - 2);
+
+        while (true)
+        {
+          // Collect Headers
+          string[] parts = ReadKeyValue(inputStream);
+          if (parts == null)
+            break;
+          AddHeader(parts[0], parts[1]);
+        }
+        // Read Body
+        int contentLength = 0;
+
+        try
+        {
+          contentLength = int.Parse(GetHeader("Content-Length"));
+        }
+        catch
+        {
+          contentLength = 0;
+        }
+
+        for (int i = 0; i < contentLength; i++)
+          output.WriteByte((byte)inputStream.ReadByte());
+
+        response = Encoding.UTF8.GetString(output.ToArray());
+      }
+    }
+#else
     private class RequestState<T>
     {
       public HttpWebRequest Request { get; set; }
@@ -102,6 +211,7 @@ namespace BackendlessAPI.Engine
         Api = Api.UNKNOWN;
       }
     }
+#endif
 
     private static void GetRestApiRequestCommand(Api api, object[] args, out Method method, out string url, out Dictionary<string, string> headers)
     {
@@ -300,13 +410,13 @@ namespace BackendlessAPI.Engine
         case Api.COUNTERSERVICE_COM_SET:
           method = Method.PUT;
           url += "counters/";
-          url += args[1] + "/get/compareandset?expected=" + args[2] + "&updatedvalue=" +  args[3]; // + <counterName>/get/compareandset?expected=<expected>&updatedvalue=<updated>
+          url += args[1] + "/get/compareandset?expected=" + args[2] + "&updatedvalue=" + args[3]; // + <counterName>/get/compareandset?expected=<expected>&updatedvalue=<updated>
           break;
         case Api.CACHESERVICE_PUT:
           method = Method.PUT;
           url += "cache/";
           url += args[1];
-          if((int)args[2] != 0)
+          if ((int)args[2] != 0)
             url += "?timeout=" + args[2]; // + <key>?timeout=<timeToLive>
           break;
         case Api.CACHESERVICE_GET:
@@ -334,10 +444,60 @@ namespace BackendlessAPI.Engine
           url += "cache/";
           url += args[1]; // + <key>
           break;
+        case Api.LOGGERSERVICE_PUT:
+          method = Method.PUT;
+          url += "log";
+          break;
         default:
           throw new BackendlessException("GetRequestData() bad parameter 'api'");
       }
     }
+
+#if UNITY_WEBPLAYER
+    public static bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+    {
+      return true;
+    }
+
+    private static void WriteToStream(Method method, Uri uri, Dictionary<string, string> headers, object data, Stream outputStream)
+    {
+      BinaryWriter stream = new BinaryWriter(outputStream);
+      stream.Write(Encoding.UTF8.GetBytes(method.ToString().ToUpper() + " " + uri.PathAndQuery + " " + "HTTP/1.1"));
+      stream.Write(EOL);
+
+      Dictionary<string, string> preHeaders = new Dictionary<string, string>();
+      preHeaders.Add("Host", uri.Host);
+      if (data != null)
+        preHeaders.Add("Content-Type", "application/json");
+      foreach (KeyValuePair<string, string> header in preHeaders)
+      {
+        stream.Write(Encoding.UTF8.GetBytes(header.Key));
+        stream.Write(':');
+        stream.Write(Encoding.UTF8.GetBytes(header.Value));
+        stream.Write(EOL);
+      }
+
+      foreach (KeyValuePair<string, string> header in headers)
+      {
+        stream.Write(Encoding.UTF8.GetBytes(header.Key));
+        stream.Write(':');
+        stream.Write(Encoding.UTF8.GetBytes(header.Value));
+        stream.Write(EOL);
+      }
+      if (data != null)
+      {
+        byte[] bytes = Encoding.UTF8.GetBytes(JsonMapper.ToJson(data));
+        stream.Write(Encoding.UTF8.GetBytes("Content-Length:" + bytes.Length.ToString()));
+        stream.Write(EOL);
+        stream.Write(EOL);
+        stream.Write(bytes);
+      }
+      else
+      {
+        stream.Write(EOL);
+      }
+    }
+#endif
 
     public static T InvokeSync<T>(Api api, object[] args)
     {
@@ -359,6 +519,100 @@ namespace BackendlessAPI.Engine
       }
     }
 
+#if UNITY_WEBPLAYER
+    public static T InvokeSync<T>(Api api, Method method, string url, Dictionary<string, string> headers, object data)
+    {
+      SocketResponse response = null;
+
+      try
+      {
+        Uri uri = new Uri(url);
+        int maximumRetryCount = 5;
+        int retry = 0;
+
+        while (++retry < maximumRetryCount)
+        {
+          TcpClient client = new TcpClient();
+          client.Connect(uri.Host, uri.Port);
+          using (NetworkStream stream = client.GetStream())
+          {
+            Stream ostream = stream as Stream;
+            if (uri.Scheme.ToLower() == "https")
+            {
+              ostream = new SslStream(stream, false, new RemoteCertificateValidationCallback(ValidateServerCertificate));
+              try
+              {
+                SslStream ssl = ostream as SslStream;
+                ssl.AuthenticateAsClient(uri.Host);
+              }
+              catch (System.Exception e)
+              {
+                BackendlessFault backendlessFault = new BackendlessFault(e);
+                throw new BackendlessException(backendlessFault);
+              }
+            }
+
+            WriteToStream(method, uri, headers, data, ostream);
+            response = new SocketResponse();
+            response.ReadFromStream(ostream);
+          }
+          client.Close();
+
+          switch (response.status)
+          {
+            case 307:
+            case 302:
+            case 301:
+              uri = new Uri(response.GetHeader("Location"));
+              continue;
+            default:
+              retry = maximumRetryCount;
+              break;
+          }
+        }
+      }
+      catch (System.Exception ex)
+      {
+        BackendlessFault backendlessFault = new BackendlessFault(ex);
+        throw new BackendlessException(backendlessFault);
+      }
+
+      if (response.status == 200)
+      {
+        T result = default(T);
+        string responseJsonString = response.response;
+        if ((api >= Api.COUNTERSERVICE_GET && api <= Api.COUNTERSERVICE_COM_SET) || api == Api.CACHESERVICE_CONTAINS)
+        {
+          result = (T)Convert.ChangeType(responseJsonString, typeof(T));
+        }
+        else
+        {
+          if (string.IsNullOrEmpty(responseJsonString) == false)
+            result = JsonMapper.ToObject<T>(responseJsonString);
+        }
+        return result;
+      }
+      else
+      {
+        BackendlessFault fault = null;
+
+        try
+        {
+          JsonData errorResponse = JsonMapper.ToObject(response.response);
+          int code = (int)errorResponse["code"];
+          string message = (string)errorResponse["message"];
+
+          fault = new BackendlessFault(code.ToString(), message, null);
+        }
+        catch (System.Exception ex)
+        {
+          fault = new BackendlessFault(ex);
+        }
+
+        throw new BackendlessException(fault);
+      }
+    }
+#else
     public static T InvokeSync<T>(Api api, Method method, string url, Dictionary<string, string> headers, object data)
     {
       try
@@ -445,6 +699,7 @@ namespace BackendlessAPI.Engine
         throw new BackendlessException(backendlessFault);
       }
     }
+#endif
 
     public static void InvokeAsync<T>(Api api, object[] args, AsyncCallback<T> callback)
     {
@@ -470,6 +725,108 @@ namespace BackendlessAPI.Engine
       }
     }
 
+#if UNITY_WEBPLAYER
+    public static void InvokeAsync<T>(Api api, Method method, string url, Dictionary<string, string> headers, object data, AsyncCallback<T> callback)
+    {
+      ThreadPool.QueueUserWorkItem(new WaitCallback(delegate(object t)
+      {
+        SocketResponse response = null;
+
+        try
+        {
+          Uri uri = new Uri(url);
+          int maximumRetryCount = 5;
+          int retry = 0;
+
+          while (++retry < maximumRetryCount)
+          {
+            TcpClient client = new TcpClient();
+            client.Connect(uri.Host, uri.Port);
+            using (NetworkStream stream = client.GetStream())
+            {
+              Stream ostream = stream as Stream;
+              if (uri.Scheme.ToLower() == "https")
+              {
+                ostream = new SslStream(stream, false, new RemoteCertificateValidationCallback(ValidateServerCertificate));
+                try
+                {
+                  SslStream ssl = ostream as SslStream;
+                  ssl.AuthenticateAsClient(uri.Host);
+                }
+                catch (System.Exception e)
+                {
+                  BackendlessFault backendlessFault = new BackendlessFault(e);
+                  if (callback != null)
+                    callback.ErrorHandler.Invoke(backendlessFault);
+                }
+              }
+
+              WriteToStream(method, uri, headers, data, ostream);
+              response = new SocketResponse();
+              response.ReadFromStream(ostream);
+            }
+            client.Close();
+
+            switch (response.status)
+            {
+              case 307:
+              case 302:
+              case 301:
+                uri = new Uri(response.GetHeader("Location"));
+                continue;
+              default:
+                retry = maximumRetryCount;
+                break;
+            }
+          }
+        }
+        catch (System.Exception ex)
+        {
+          BackendlessFault backendlessFault = new BackendlessFault(ex);
+          if (callback != null)
+            callback.ErrorHandler.Invoke(backendlessFault);
+        }
+
+        if (response.status == 200)
+        {
+          T result = default(T);
+          string responseJsonString = response.response;
+          if ((api >= Api.COUNTERSERVICE_GET && api <= Api.COUNTERSERVICE_COM_SET) || api == Api.CACHESERVICE_CONTAINS)
+          {
+            result = (T)Convert.ChangeType(responseJsonString, typeof(T));
+          }
+          else
+          {
+            if (string.IsNullOrEmpty(responseJsonString) == false)
+              result = JsonMapper.ToObject<T>(responseJsonString);
+          }
+
+          if (callback != null)
+            callback.ResponseHandler.Invoke(result);
+        }
+        else
+        {
+          BackendlessFault fault = null;
+
+          try
+          {
+            JsonData errorResponse = JsonMapper.ToObject(response.response);
+            int code = (int)errorResponse["code"];
+            string message = (string)errorResponse["message"];
+
+            fault = new BackendlessFault(code.ToString(), message, null);
+          }
+          catch (System.Exception ex)
+          {
+            fault = new BackendlessFault(ex);
+          }
+
+          if (callback != null)
+            callback.ErrorHandler.Invoke(fault);
+        }
+      }));
+    }
+#else
     public static void InvokeAsync<T>(Api api, Method method, string url, Dictionary<string, string> headers, object data, AsyncCallback<T> callback)
     {
       RequestState<T> requestState = new RequestState<T>();
@@ -606,5 +963,7 @@ namespace BackendlessAPI.Engine
           requestState.Callback.ErrorHandler.Invoke(backendlessFault);
       }
     }
+#endif
+
   }
 }
