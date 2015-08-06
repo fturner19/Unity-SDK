@@ -391,13 +391,13 @@ namespace BackendlessAPI.Test.MessagingService.SyncTests
             }
             catch( System.Exception t )
             {
-              PublishTest.FailCountDownWith( t );
+              PublishTest.FailCountDownWithStatic(t);
             }
 
             PublishTest.latch.Signal();
           }
         }
-      }, fault => PublishTest.FailCountDownWith( fault ) )
+      }, fault => PublishTest.FailCountDownWithStatic( fault ) )
     {
     }
   }

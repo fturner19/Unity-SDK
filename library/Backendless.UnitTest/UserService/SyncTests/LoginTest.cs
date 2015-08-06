@@ -97,7 +97,7 @@ namespace BackendlessAPI.Test.UserService.SyncTests
     {
       Backendless.UserService.Login( (string) user.Email, user.Password + "foo" );
     }
-    catch( System.Exception t )
+    catch( System.Exception /* t */ )
     {
     }
 

@@ -27,12 +27,12 @@ namespace BackendlessAPI.Test
     public BackendlessFault testFault;
     public CountdownEvent testLatch;
 
-    public void SetLatch()
+    public virtual void SetLatch()
     {
       SetLatch( 1 );
     }
 
-    public void SetLatch( int count )
+    public virtual void SetLatch(int count)
     {
       testLatch = new CountdownEvent( count );
       testFault = null;
@@ -49,13 +49,13 @@ namespace BackendlessAPI.Test
       testLatch.Signal();
     }
 
-    public void FailCountDownWith( System.Exception e )
+    public virtual void FailCountDownWith(System.Exception e)
     {
       testFault = new BackendlessFault( e.Message );
       testLatch.Signal();
     }
 
-    public void FailCountDownWith( BackendlessFault backendlessFault )
+    public virtual void FailCountDownWith(BackendlessFault backendlessFault)
     {
       testFault = backendlessFault;
       testLatch.Signal();

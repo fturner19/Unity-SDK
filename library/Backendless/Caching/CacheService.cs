@@ -24,12 +24,10 @@ namespace BackendlessAPI.Caching
   class CacheService<T> : ICache<T>
   {
     private String key;
-    private T type;
 
     public CacheService( T type, String key )
     {
       this.key = key;
-      this.type = type;
     }
 
     public void Put( T value, AsyncCallback<object> callback )

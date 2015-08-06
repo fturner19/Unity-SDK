@@ -215,7 +215,7 @@ namespace BackendlessAPI.Test.MessagingService.SyncTests
         Backendless.Messaging.Subscribe( GetRandomstringMessage(), null );
         Assert.Fail("UnknownChannel fail");
       }
-      catch( System.Exception e )
+      catch( System.Exception /* e */ )
       {
       }
     }

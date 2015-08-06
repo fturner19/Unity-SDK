@@ -58,26 +58,38 @@ namespace BackendlessAPI.Test.MessagingService.SyncTests
       if( testResult != null )
         FailCountDownWith( testResult );
     }
-
-    public void SetLatch()
+    
+    public override void SetLatch()
     {
       SetLatch( 1 );
     }
 
-    public void SetLatch( int count )
+    public override void SetLatch(int count)
     {
       latch = new CountdownEvent( count );
     }
 
-    public static void FailCountDownWith( System.Exception ex )
+    public override void FailCountDownWith(System.Exception ex)
     {
       SetTestResult( ex );
       CountDownAll();
     }
 
-    public static void FailCountDownWith( BackendlessFault fault )
+    public override void FailCountDownWith(BackendlessFault fault)
     {
       SetTestResult( fault.ToString() );
+      CountDownAll();
+    }
+
+    public static void FailCountDownWithStatic(System.Exception ex)
+    {
+      SetTestResult(ex);
+      CountDownAll();
+    }
+
+    public static void FailCountDownWithStatic(BackendlessFault fault)
+    {
+      SetTestResult(fault.ToString());
       CountDownAll();
     }
 

@@ -37,7 +37,7 @@ namespace BackendlessAPI.Test.PersistenceService.SyncTests
       {
         savedWPPerson = Backendless.Persistence.Save(uniqueWpPerson);
       }
-      catch (BackendlessException e)
+      catch (BackendlessException /* e */)
       {
       }
       Assert.IsNotNull( savedWPPerson, "Server returned a null result" );

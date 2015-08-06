@@ -16,7 +16,6 @@ limitations under the License.
 */
 
 using System;
-using Newtonsoft.Json;
 
 namespace BackendlessAPI.Test.PersistenceService.Entities.BaseEntities
 {
