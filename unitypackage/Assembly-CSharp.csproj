@@ -19,7 +19,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_4_6_1;UNITY_4_6;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_4_6_6;UNITY_4_6;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_IL2CPP;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;UNITY5_SCRIPTING_IN_UNITY4;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_MONO;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
 	<NoWarn>0169</NoWarn>
@@ -46,13 +46,74 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Backendless\Async\AsyncCallback.cs" />
+     <Compile Include="Assets\Backendless\Async\UploadCallback.cs" />
+     <Compile Include="Assets\Backendless\Backendless.cs" />
+     <Compile Include="Assets\Backendless\BackendlessUser.cs" />
+     <Compile Include="Assets\Backendless\Caching\Cache.cs" />
+     <Compile Include="Assets\Backendless\Caching\CacheService.cs" />
+     <Compile Include="Assets\Backendless\Caching\ICache.cs" />
+     <Compile Include="Assets\Backendless\Counters\AtomicImpl.cs" />
+     <Compile Include="Assets\Backendless\Counters\CounterService.cs" />
+     <Compile Include="Assets\Backendless\Counters\IAtomic.cs" />
+     <Compile Include="Assets\Backendless\Data\BackendlessCollection.cs" />
+     <Compile Include="Assets\Backendless\Data\DataStoreFactory.cs" />
+     <Compile Include="Assets\Backendless\Data\IBackendlessQuery.cs" />
+     <Compile Include="Assets\Backendless\Data\IDataStore.cs" />
+     <Compile Include="Assets\Backendless\Engine\HeadersManager.cs" />
+     <Compile Include="Assets\Backendless\Engine\Invoker.cs" />
+     <Compile Include="Assets\Backendless\Events\Events.cs" />
+     <Compile Include="Assets\Backendless\Exception\BackendlessException.cs" />
+     <Compile Include="Assets\Backendless\Exception\BackendlessFault.cs" />
+     <Compile Include="Assets\Backendless\Exception\ExceptionMessage.cs" />
+     <Compile Include="Assets\Backendless\File\BackendlessFile.cs" />
+     <Compile Include="Assets\Backendless\Geo\BackendlessGeoQuery.cs" />
+     <Compile Include="Assets\Backendless\Geo\GeoCategory.cs" />
+     <Compile Include="Assets\Backendless\Geo\GeoPoint.cs" />
+     <Compile Include="Assets\Backendless\Geo\SearchMatchesResult.cs" />
+     <Compile Include="Assets\Backendless\Geo\Units.cs" />
+     <Compile Include="Assets\Backendless\Logging\LogBatch.cs" />
+     <Compile Include="Assets\Backendless\Logging\LogBuffer.cs" />
+     <Compile Include="Assets\Backendless\Logging\LogMessage.cs" />
+     <Compile Include="Assets\Backendless\Logging\Logger.cs" />
+     <Compile Include="Assets\Backendless\Logging\LoggingService.cs" />
+     <Compile Include="Assets\Backendless\Messaging\BodyParts.cs" />
+     <Compile Include="Assets\Backendless\Messaging\DeliveryOptions.cs" />
+     <Compile Include="Assets\Backendless\Messaging\DeviceRegistration.cs" />
+     <Compile Include="Assets\Backendless\Messaging\Message.cs" />
+     <Compile Include="Assets\Backendless\Messaging\MessageStatus.cs" />
+     <Compile Include="Assets\Backendless\Messaging\PublishOptions.cs" />
+     <Compile Include="Assets\Backendless\Messaging\PublishStatusEnum.cs" />
+     <Compile Include="Assets\Backendless\Messaging\PushPolicyEnum.cs" />
+     <Compile Include="Assets\Backendless\Messaging\Subscription.cs" />
+     <Compile Include="Assets\Backendless\Messaging\SubscriptionOptions.cs" />
+     <Compile Include="Assets\Backendless\Persistence\BackendlessDataQuery.cs" />
+     <Compile Include="Assets\Backendless\Persistence\BackendlessEntity.cs" />
+     <Compile Include="Assets\Backendless\Persistence\QueryOptions.cs" />
+     <Compile Include="Assets\Backendless\Properties\AssemblyInfo.cs" />
+     <Compile Include="Assets\Backendless\Property\AbstractProperty.cs" />
+     <Compile Include="Assets\Backendless\Property\DateTypeEnum.cs" />
+     <Compile Include="Assets\Backendless\Property\ObjectProperty.cs" />
+     <Compile Include="Assets\Backendless\Property\UserProperty.cs" />
+     <Compile Include="Assets\Backendless\Service\FileService.cs" />
+     <Compile Include="Assets\Backendless\Service\GeoService.cs" />
+     <Compile Include="Assets\Backendless\Service\MessagingService.cs" />
+     <Compile Include="Assets\Backendless\Service\PersistenceService.cs" />
+     <Compile Include="Assets\Backendless\Service\UserService.cs" />
+     <Compile Include="Assets\Backendless\litjson-0.7.0\src\LitJson\IJsonWrapper.cs" />
+     <Compile Include="Assets\Backendless\litjson-0.7.0\src\LitJson\JsonData.cs" />
+     <Compile Include="Assets\Backendless\litjson-0.7.0\src\LitJson\JsonException.cs" />
+     <Compile Include="Assets\Backendless\litjson-0.7.0\src\LitJson\JsonMapper.cs" />
+     <Compile Include="Assets\Backendless\litjson-0.7.0\src\LitJson\JsonMockWrapper.cs" />
+     <Compile Include="Assets\Backendless\litjson-0.7.0\src\LitJson\JsonPropertyAttribute.cs" />
+     <Compile Include="Assets\Backendless\litjson-0.7.0\src\LitJson\JsonReader.cs" />
+     <Compile Include="Assets\Backendless\litjson-0.7.0\src\LitJson\JsonWriter.cs" />
+     <Compile Include="Assets\Backendless\litjson-0.7.0\src\LitJson\Lexer.cs" />
+     <Compile Include="Assets\Backendless\litjson-0.7.0\src\LitJson\ParserToken.cs" />
      <Compile Include="Assets\BackendlessPlugin.cs" />
      <None Include="Assets\Plugins\Android\AndroidManifest_backendless.xml" />
  <Reference Include="UnityEngine.UI">
- <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.1/UnityEngine.UI.dll</HintPath>
- </Reference>
- <Reference Include="Backendless">
- <HintPath>C:/w/mbaas/working/unity3d-SDK/unitypackage/Assets/Backendless.dll</HintPath>
+ <HintPath>C:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.6/UnityEngine.UI.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
