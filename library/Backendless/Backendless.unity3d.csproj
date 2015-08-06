@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;BACKENDLESS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;BACKENDLESS</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -77,6 +77,11 @@
     <Compile Include="litjson-0.7.0\src\LitJson\JsonWriter.cs" />
     <Compile Include="litjson-0.7.0\src\LitJson\Lexer.cs" />
     <Compile Include="litjson-0.7.0\src\LitJson\ParserToken.cs" />
+    <Compile Include="Logging\LogBatch.cs" />
+    <Compile Include="Logging\LogBuffer.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LoggingService.cs" />
+    <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Messaging\BodyParts.cs" />
     <Compile Include="Messaging\DeliveryOptions.cs" />
     <Compile Include="Messaging\DeviceRegistration.cs" />

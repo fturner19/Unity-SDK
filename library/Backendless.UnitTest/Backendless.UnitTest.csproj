@@ -35,9 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\Backendless\libs\Json.NET-6.0r3\Net20\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -74,6 +71,8 @@
     <Compile Include="GeoService\SyncTests\TestsFrame.cs" />
     <Compile Include="IAsyncTest.cs" />
     <Compile Include="ITest.cs" />
+    <Compile Include="Logging\SyncTests\LoggingTest.cs" />
+    <Compile Include="Logging\SyncTests\TestsFrame.cs" />
     <Compile Include="MessagingService\SyncTests\PublishTest.cs" />
     <Compile Include="MessagingService\SyncTests\SubscriptionTest.cs" />
     <Compile Include="MessagingService\SyncTests\TestsFrame.cs" />

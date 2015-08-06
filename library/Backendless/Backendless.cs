@@ -24,6 +24,7 @@ using BackendlessAPI.Service;
 using System.Net;
 using BackendlessAPI.Caching;
 using BackendlessAPI.Counters;
+using BackendlessAPI.Logging;
 
 namespace BackendlessAPI
 {
@@ -31,16 +32,16 @@ namespace BackendlessAPI
   {
     public static string DEFAULT_URL = "https://api.backendless.com";
 
-    public static PersistenceService Persistence;
-    public static PersistenceService Data;
-    public static GeoService Geo;
-    public static MessagingService Messaging;
-    public static FileService Files;
-    public static UserService UserService;
+    public static BackendlessAPI.Service.PersistenceService Persistence;
+    public static BackendlessAPI.Service.PersistenceService Data;
+    public static BackendlessAPI.Service.GeoService Geo;
+    public static BackendlessAPI.Service.MessagingService Messaging;
+    public static BackendlessAPI.Service.FileService Files;
+    public static BackendlessAPI.Service.UserService UserService;
     public static BackendlessAPI.Events Events;
-    public static Cache Cache;
-    public static CounterService Counters;
-
+    public static BackendlessAPI.Caching.Cache Cache;
+    public static BackendlessAPI.Counters.CounterService Counters;
+    public static BackendlessAPI.Logging.LoggingService Logging;
     public static string Url { get; private set; }
 
     public static string AppId { get; private set; }
@@ -87,13 +88,14 @@ namespace BackendlessAPI
 
       Persistence = new PersistenceService();
       Data = Persistence;
-      Geo = new GeoService();
-      Messaging = new MessagingService();
-      Files = new FileService();
-      UserService = new UserService();
-      Events = Events.GetInstance();
-      Cache = Cache.GetInstance();
-      Counters = CounterService.GetInstance();
+      Geo = new BackendlessAPI.Service.GeoService();
+      Messaging = new BackendlessAPI.Service.MessagingService();
+      Files = new BackendlessAPI.Service.FileService();
+      UserService = new BackendlessAPI.Service.UserService();
+      Events = BackendlessAPI.Events.GetInstance();
+      Cache = BackendlessAPI.Caching.Cache.GetInstance();
+      Counters = BackendlessAPI.Counters.CounterService.GetInstance();
+      Logging = new BackendlessAPI.Logging.LoggingService();
 
       HeadersManager.CleanHeaders();
     }
